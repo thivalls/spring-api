@@ -16,42 +16,39 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zup.bank.models.Account;
-import com.zup.bank.repositories.AccountRepository;
+import com.zup.bank.services.AccountService;
 
 @RestController
 @RequestMapping("/accounts")
 public class AccountResource {
 
 	@Autowired
-	AccountRepository accountRepository;
+	AccountService accountService;
 	
 	@GetMapping
 	public List<Account> all() {
-		return accountRepository.findAll();
+		return accountService.all();
 	}
 	
 	@GetMapping("/{account}")
 	public Optional<Account> show(@PathVariable("account") Long id) {
-		return accountRepository.findById(id);
+		return accountService.show(id);
 	}
 	
 	@PostMapping
+	@ResponseStatus(code=HttpStatus.CREATED)
 	public Account store(@RequestBody Account account) {
-		return accountRepository.save(account);
+		return accountService.store(account);
 	}
 	
-	@PutMapping("/{product}")
+	@PutMapping("/{account}")
 	public Account update(@PathVariable("account") Long id, @RequestBody Account account) {
-			account.setId(id);
-			return accountRepository.save(account);
+		return accountService.update(id, account);
 	}
 	
 	@DeleteMapping("/{account}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void destroy(@PathVariable("account") Long id) {
-		Optional<Account> account = accountRepository.findById(id);
-		if(account.isPresent()) {
-			accountRepository.deleteById(id);
-		}
+		accountService.destroy(id);
 	}
 }
