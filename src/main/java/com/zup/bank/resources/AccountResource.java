@@ -3,6 +3,8 @@ package com.zup.bank.resources;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,23 +28,26 @@ public class AccountResource {
 	AccountService accountService;
 	
 	@GetMapping
+	@ResponseStatus(HttpStatus.OK)
 	public List<Account> all() {
 		return accountService.all();
 	}
 	
 	@GetMapping("/{account}")
+	@ResponseStatus(HttpStatus.OK)
 	public Optional<Account> show(@PathVariable("account") Long id) {
 		return accountService.show(id);
 	}
 	
 	@PostMapping
-	@ResponseStatus(code=HttpStatus.CREATED)
-	public Account store(@RequestBody Account account) {
+	@ResponseStatus(HttpStatus.CREATED)
+	public Account store(@Valid @RequestBody Account account) {
 		return accountService.store(account);
 	}
 	
 	@PutMapping("/{account}")
-	public Account update(@PathVariable("account") Long id, @RequestBody Account account) {
+	@ResponseStatus(HttpStatus.OK)
+	public Account update(@Valid @PathVariable("account") Long id, @RequestBody Account account) {
 		return accountService.update(id, account);
 	}
 	
