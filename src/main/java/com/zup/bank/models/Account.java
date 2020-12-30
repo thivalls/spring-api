@@ -1,16 +1,18 @@
-package com.zup.bank;
+package com.zup.bank.models;
 
 import java.sql.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import lombok.Data;
 
-@Entity
 @Data
-public class BankAccount {
+@Entity
+@Table(name="accounts")
+public class Account {
 	@Id
 	private Long id;
 	
