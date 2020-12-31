@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zup.bank.exceptions.ResourceNotFoundException;
 import com.zup.bank.interfaces.IAccountService;
 import com.zup.bank.models.Account;
 import com.zup.bank.repositories.AccountRepository;
@@ -23,6 +24,7 @@ public class AccountService implements IAccountService {
 
 	@Override
 	public Optional<Account> show(long id) {
+		checkAccountExists(id);
 		return accountRepository.findById(id);
 	}
 
@@ -33,15 +35,24 @@ public class AccountService implements IAccountService {
 
 	@Override
 	public Account update(long id, Account account) {
+		checkAccountExists(id);
 		account.setId(id);
 		return accountRepository.save(account);
 	}
 
 	@Override
 	public void destroy(long id) {
+		checkAccountExists(id);
 		Optional<Account> account = accountRepository.findById(id);
 		if(account.isPresent()) {
 			accountRepository.deleteById(id);
+		}
+	}
+	
+	public void checkAccountExists(long id) {
+		Optional<Account> account = accountRepository.findById(id);
+		if(!account.isPresent()) {
+			throw new ResourceNotFoundException("This account does not exists.");
 		}
 	}
 
