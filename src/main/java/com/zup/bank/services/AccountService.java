@@ -18,9 +18,7 @@ public class AccountService implements IAccountService {
 	AccountRepository accountRepository;
 	
 	@Override
-	public List<Account> all() {
-		return accountRepository.findAll();
-	}
+	public List<Account> all() { return accountRepository.findAll(); }
 
 	@Override
 	public Optional<Account> show(long id) {
@@ -30,12 +28,17 @@ public class AccountService implements IAccountService {
 
 	@Override
 	public Account store(Account account) {
+		System.out.println(account.getEmail());
+		checkCreateEmailExists(account.getEmail());
+		checkCreateCpfExists(account.getCpf());
 		return accountRepository.save(account);
 	}
 
 	@Override
 	public Account update(long id, Account account) {
 		checkAccountExists(id);
+		checkUpdateEmailExists(id, account);
+		checkUpdateCpfExists(id, account);
 		account.setId(id);
 		return accountRepository.save(account);
 	}
@@ -53,6 +56,35 @@ public class AccountService implements IAccountService {
 		Optional<Account> account = accountRepository.findById(id);
 		if(!account.isPresent()) {
 			throw new ResourceNotFoundException("This account does not exists.");
+		}
+	}
+	
+	public void checkCreateEmailExists(String email) {
+		Account account = accountRepository.findByEmail(email);
+		if(account != null) {
+			throw new ResourceNotFoundException("This email alread exists.");
+		}
+	}
+	
+	public void checkCreateCpfExists(String cpf) {
+		Account account = accountRepository.findByCpf(cpf);
+		if(account != null) {
+			throw new ResourceNotFoundException("This cpf alread exists.");
+		}
+	}
+	
+	public void checkUpdateEmailExists(long id, Account account) {
+		Account accountExist = accountRepository.findByEmail(account.getEmail());
+		if(accountExist != null && accountExist.getId() != id) {
+			 	throw new ResourceNotFoundException("This email alread exists.");
+			
+		}
+	}
+	
+	public void checkUpdateCpfExists(long id, Account account) {
+		Account accountExist = accountRepository.findByCpf(account.getCpf());
+		if(accountExist != null && accountExist.getId() != id) {
+			throw new ResourceNotFoundException("This cpf alread exists.");
 		}
 	}
 
