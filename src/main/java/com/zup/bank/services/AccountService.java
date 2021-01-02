@@ -28,7 +28,6 @@ public class AccountService implements IAccountService {
 
 	@Override
 	public Account store(Account account) {
-		System.out.println(account.getEmail());
 		checkCreateEmailExists(account.getEmail());
 		checkCreateCpfExists(account.getCpf());
 		return accountRepository.save(account);
